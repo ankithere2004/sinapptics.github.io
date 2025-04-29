@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sinapptics | AI-Powered Healthcare Solutions</title>
+    <!-- Preload the logo image to ensure it loads before rendering -->
+    <link rel="preload" href="sinapptics.png" as="image" fetchpriority="high">
     <style>
         :root {
             --primary-light: #e0f7ff;
@@ -68,7 +70,26 @@
         
         .logo img {
             height: 65px; /* Increased logo size */
+            width: auto; /* Maintain aspect ratio */
             margin-right: 10px;
+            /* Add a fallback background color while the image loads */
+            background-color: rgba(255, 255, 255, 0.1);
+            /* Add a subtle transition effect */
+            transition: opacity 0.3s ease;
+        }
+        
+        /* Create a fallback class to apply when image fails to load */
+        .logo-fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 65px;
+            width: 65px;
+            margin-right: 10px;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: bold;
+            border-radius: 8px;
         }
         
         nav ul {
@@ -531,12 +552,24 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Define critical functions early to ensure they're available when needed -->
+    <script>
+        // Function to create fallback logo element when image fails to load
+        function createLogoFallback() {
+            const fallback = document.createElement('div');
+            fallback.className = 'logo-fallback';
+            fallback.textContent = 'S';
+            return fallback;
+        }
+    </script>
 </head>
 <body>
     <header>
         <div class="container header-content">
             <a href="#" class="logo">
-                <img src="sinapptics.png" alt="Sinapptics Logo">
+                <!-- Use embedded SVG logo with fallback mechanism -->
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NSIgaGVpZ2h0PSI2NSIgdmlld0JveD0iMCAwIDY1IDY1Ij48Y2lyY2xlIGN4PSIzMi41IiBjeT0iMzIuNSIgcj0iMzAiIGZpbGw9IiMyOTgwYjkiLz48cGF0aCBkPSJNMjAgMjBjMCAwIDEwIDEwIDI1IDEwdjE1YzAgMC0xNSAwLTI1LTEweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00NSA0NWMwIDAgLTEwIC0xMCAtMjUgLTEwdi0xNWMwIDAgMTUgMCAyNSAxMHoiIGZpbGw9IiNlMGY3ZmYiLz48L3N2Zz4=" alt="Sinapptics Logo" width="65" height="65" loading="eager">
                 Sinapptics
             </a>
             <div class="menu-toggle" id="mobile-menu">
@@ -604,7 +637,8 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <img src="sinapptics.png" alt="Sinapptics Healthcare AI Technology" style="max-width: 100%; max-height: 100%;">
+                    <img src="sinapptics.png" alt="Sinapptics Healthcare AI Technology" width="320" height="320" loading="lazy" 
+                         onerror="this.onerror=null; this.style.display='none'; this.parentNode.innerHTML='<div style=&quot;font-size:2rem;color:var(--primary-dark);&quot;>Sinapptics AI</div>'">
                 </div>
                 <div class="about-text">
                     <h2>Why Choose Sinapptics?</h2>
@@ -742,6 +776,25 @@
     </footer>
 
     <script>
+        // Function to create fallback logo element when image fails to load
+        function createLogoFallback() {
+            const fallback = document.createElement('div');
+            fallback.className = 'logo-fallback';
+            fallback.textContent = 'S';
+            return fallback;
+        }
+        
+        // Image loading optimization - preload images when page loads
+        window.addEventListener('load', function() {
+            // Preload any additional images if needed
+            const imagesToPreload = ['sinapptics.png'];
+            
+            imagesToPreload.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        });
+        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
