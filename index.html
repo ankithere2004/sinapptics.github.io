@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sinapptics | AI-Powered Healthcare Solutions</title>
-    <!-- Preload the logo image to ensure it loads before rendering -->
-    <link rel="preload" href="sinapptics.png" as="image" fetchpriority="high">
+    <!-- Preload the SVG logo to ensure it loads before rendering -->
+    <link rel="preload" href="sinapptics.svg" as="image" fetchpriority="high">
     <style>
         :root {
             --primary-light: #e0f7ff;
@@ -68,7 +68,7 @@
             align-items: center;
         }
         
-        .logo img {
+        .logo img, .logo .logo-svg {
             height: 65px; /* Increased logo size */
             width: auto; /* Maintain aspect ratio */
             margin-right: 10px;
@@ -264,9 +264,14 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         
-        .about-image img {
+        .about-image img, .about-image .about-svg {
             max-width: 80%;
             max-height: 80%;
+        }
+        
+        /* Style for SVG objects to ensure proper display */
+        object.about-svg {
+            display: block;
         }
         
         .about-text h2 {
@@ -469,7 +474,7 @@
                 padding: 0 1rem;
             }
 
-            .logo img {
+            .logo img, .logo .logo-svg {
                 height: 50px; /* Increased logo size on mobile but still responsive */
             }
             
@@ -568,8 +573,7 @@
     <header>
         <div class="container header-content">
             <a href="#" class="logo">
-                <!-- Use embedded SVG logo with fallback mechanism -->
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NSIgaGVpZ2h0PSI2NSIgdmlld0JveD0iMCAwIDY1IDY1Ij48Y2lyY2xlIGN4PSIzMi41IiBjeT0iMzIuNSIgcj0iMzAiIGZpbGw9IiMyOTgwYjkiLz48cGF0aCBkPSJNMjAgMjBjMCAwIDEwIDEwIDI1IDEwdjE1YzAgMC0xNSAwLTI1LTEweiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik00NSA0NWMwIDAgLTEwIC0xMCAtMjUgLTEwdi0xNWMwIDAgMTUgMCAyNSAxMHoiIGZpbGw9IiNlMGY3ZmYiLz48L3N2Zz4=" alt="Sinapptics Logo" width="65" height="65" loading="eager">
+                <img src="sinapptics.svg" alt="Sinapptics Logo" width="65" height="65" class="logo-svg">
                 Sinapptics
             </a>
             <div class="menu-toggle" id="mobile-menu">
@@ -637,8 +641,7 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-image">
-                    <!-- Use embedded SVG for consistent appearance across all devices -->
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjAiIGhlaWdodD0iMzIwIiB2aWV3Qm94PSIwIDAgMzIwIDMyMCI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYwIiByPSIxNTAiIGZpbGw9IiMyOTgwYjkiLz48cGF0aCBkPSJNMTAwIDEwMGMwIDAgNTAgNDAgMTIwIDQwdjcwYzAgMCAtNzAgMCAtMTIwIC00MHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMjIwIDIyMGMwIDAgLTUwIC00MCAtMTIwIC00MHYtNzBjMCAwIDcwIDAgMTIwIDQweiIgZmlsbD0iI2UwZjdmZiIvPjx0ZXh0IHg9IjE2MCIgeT0iMTcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMjQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiNmZmZmZmYiPkhDIEFJPC90ZXh0Pjwvc3ZnPg==" alt="Sinapptics Healthcare AI Technology" width="320" height="320" loading="lazy">
+                    <img src="sinapptics.svg" alt="Sinapptics Logo" width="320" height="320" class="about-svg">
                 </div>
                 <div class="about-text">
                     <h2>Why Choose Sinapptics?</h2>
@@ -786,12 +789,29 @@
         
         // Image loading optimization - preload images when page loads
         window.addEventListener('load', function() {
-            // Preload any additional images if needed
-            const imagesToPreload = ['sinapptics.png'];
+            // Preload SVG using Image object instead of fetch to avoid CORS issues
+            const imagesToPreload = ['sinapptics.svg'];
             
             imagesToPreload.forEach(src => {
                 const img = new Image();
                 img.src = src;
+                
+                // Handle any errors silently
+                img.onerror = function() {
+                    console.warn(`Failed to preload: ${src}`);
+                };
+            });
+            
+            // Add error handling for SVG images on the page
+            document.querySelectorAll('img[src$=".svg"]').forEach(img => {
+                img.onerror = function() {
+                    // Try to replace with fallback if available
+                    if (img.classList.contains('logo-svg')) {
+                        const fallback = createLogoFallback();
+                        img.parentNode.insertBefore(fallback, img);
+                        img.style.display = 'none';
+                    }
+                };
             });
         });
         
