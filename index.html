@@ -13,6 +13,7 @@
             --text-dark: #2c3e50;
             --text-light: #ecf0f1;
             --shadow: rgba(0, 0, 0, 0.1);
+            --header-height: 80px; /* Define header height variable */
         }
         
         * {
@@ -26,6 +27,8 @@
             background: linear-gradient(135deg, var(--primary-light) 0%, #f1fdff 100%);
             color: var(--text-dark);
             line-height: 1.6;
+            /* Add padding-top to account for fixed header */
+            padding-top: var(--header-height);
         }
         
         .container {
@@ -37,17 +40,21 @@
         header {
             background: linear-gradient(to right, var(--primary) 0%, var(--primary-dark) 100%);
             color: white;
-            padding: 1.5rem 0;
+            padding: 0;
             box-shadow: 0 4px 6px var(--shadow);
             position: fixed;
             width: 100%;
             z-index: 1000;
+            top: 0;
+            left: 0;
+            height: var(--header-height); /* Fixed header height */
         }
         
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 100%;
         }
         
         .logo {
@@ -59,9 +66,9 @@
             align-items: center;
         }
         
-        .logo-icon {
+        .logo img {
+            height: 50px; /* Reduced logo size */
             margin-right: 10px;
-            font-size: 2.2rem;
         }
         
         nav ul {
@@ -85,10 +92,18 @@
         nav ul li a:hover {
             background-color: rgba(255, 255, 255, 0.2);
         }
+
+        /* Mobile menu button */
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: white;
+        }
         
         .hero {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-            height: 100vh;
+            min-height: calc(100vh - var(--header-height)); /* Account for header */
             display: flex;
             align-items: center;
             color: white;
@@ -117,6 +132,7 @@
             position: relative;
             z-index: 10;
             max-width: 700px;
+            padding: 4rem 0; /* Add padding to prevent content being cut off */
         }
         
         .hero h1 {
@@ -404,30 +420,111 @@
         }
         
         @media (max-width: 992px) {
+            :root {
+                --header-height: 70px; /* Smaller header on tablets */
+            }
+            
             .hero h1 {
                 font-size: 3rem;
             }
+            
             .about-content, .contact-container {
                 grid-template-columns: 1fr;
             }
+            
             .about-image {
                 height: 300px;
             }
         }
         
         @media (max-width: 768px) {
+            :root {
+                --header-height: 60px; /* Even smaller header on mobile */
+            }
+            
             .header-content {
+                padding: 0 1rem;
+            }
+
+            .logo img {
+                height: 40px; /* Smaller logo on mobile */
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+
+            nav {
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                width: 100%;
+                background: var(--primary-dark);
+                padding: 1rem 0;
+                box-shadow: 0 4px 6px var(--shadow);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+            
+            nav.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            nav ul {
                 flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem 0;
+                width: 100%;
                 text-align: center;
             }
-            nav ul {
-                margin-top: 1rem;
+            
+            nav ul li a {
+                display: block;
+                padding: 0.8rem;
             }
-            nav ul li {
-                margin: 0 0.5rem;
-            }
+            
             .hero h1 {
-                font-size: 2.5rem;
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-text h2, .contact-info h2 {
+                font-size: 2rem;
+            }
+            
+            .contact-container {
+                gap: 2rem;
+            }
+            
+            .contact-form {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Fix for iPhone notch */
+        @supports (padding: max(0px)) {
+            header {
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+                padding-top: max(0px, env(safe-area-inset-top));
+            }
+            
+            .container {
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
             }
         }
     </style>
@@ -437,10 +534,13 @@
     <header>
         <div class="container header-content">
             <a href="#" class="logo">
-                <img src="sinapptics.png" alt="Sinapptics Logo" style="height: 80px; margin-right: 10px;">
+                <img src="sinapptics.png" alt="Sinapptics Logo">
                 Sinapptics
             </a>
-            <nav>
+            <div class="menu-toggle" id="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+            <nav id="nav-menu">
                 <ul>
                     <li><a href="#home">Home</a></li>
                     <li><a href="#features">Features</a></li>
@@ -647,6 +747,33 @@
                 document.querySelector(this.getAttribute('href')).scrollIntoView({
                     behavior: 'smooth'
                 });
+            });
+        });
+        
+        // Mobile menu toggle
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+        
+        mobileMenu.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            // Toggle icon between bars and times
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+        
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('#nav-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                const icon = mobileMenu.querySelector('i');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
             });
         });
         
