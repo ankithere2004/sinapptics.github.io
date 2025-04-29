@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/sinapptics.github.io/static/css/main.fb54458c.css",
+    "main.js": "/sinapptics.github.io/static/js/main.2685781c.js",
+    "static/js/453.c61c6dc3.chunk.js": "/sinapptics.github.io/static/js/453.c61c6dc3.chunk.js",
+    "static/media/sinapptics.svg": "/sinapptics.github.io/static/media/sinapptics.ac2c429bdca9ae44fc7e2cfae48905e6.svg",
+    "index.html": "/sinapptics.github.io/index.html",
+    "main.fb54458c.css.map": "/sinapptics.github.io/static/css/main.fb54458c.css.map",
+    "main.2685781c.js.map": "/sinapptics.github.io/static/js/main.2685781c.js.map",
+    "453.c61c6dc3.chunk.js.map": "/sinapptics.github.io/static/js/453.c61c6dc3.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.fb54458c.css",
+    "static/js/main.2685781c.js"
+  ]
+}
