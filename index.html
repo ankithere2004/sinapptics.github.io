@@ -13,7 +13,7 @@
             --text-dark: #2c3e50;
             --text-light: #ecf0f1;
             --shadow: rgba(0, 0, 0, 0.1);
-            --header-height: 80px; /* Define header height variable */
+            --header-height: 85px; /* Increased header height for larger logo */
         }
         
         * {
@@ -67,7 +67,7 @@
         }
         
         .logo img {
-            height: 50px; /* Reduced logo size */
+            height: 65px; /* Increased logo size */
             margin-right: 10px;
         }
         
@@ -97,8 +97,10 @@
         .menu-toggle {
             display: none;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.8rem; /* Larger icon */
             color: white;
+            padding: 10px; /* Larger touch target */
+            -webkit-tap-highlight-color: transparent; /* Remove highlight on tap for iOS */
         }
         
         .hero {
@@ -439,7 +441,7 @@
         
         @media (max-width: 768px) {
             :root {
-                --header-height: 60px; /* Even smaller header on mobile */
+                --header-height: 70px; /* Increased header height on mobile */
             }
             
             .header-content {
@@ -447,7 +449,7 @@
             }
 
             .logo img {
-                height: 40px; /* Smaller logo on mobile */
+                height: 50px; /* Increased logo size on mobile but still responsive */
             }
             
             .menu-toggle {
@@ -534,7 +536,7 @@
     <header>
         <div class="container header-content">
             <a href="#" class="logo">
-                <img src="sinapptics.png" height="80px" alt="Sinapptics Logo">
+                <img src="sinapptics.png" alt="Sinapptics Logo">
                 Sinapptics
             </a>
             <div class="menu-toggle" id="mobile-menu">
@@ -750,30 +752,36 @@
             });
         });
         
-        // Mobile menu toggle
+        // Mobile menu toggle - enhanced for mobile devices
         const mobileMenu = document.getElementById('mobile-menu');
         const navMenu = document.getElementById('nav-menu');
         
-        mobileMenu.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            // Toggle icon between bars and times
-            const icon = this.querySelector('i');
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
-            }
+        // Add both click and touchend events for better mobile responsiveness
+        ['click', 'touchend'].forEach(eventType => {
+            mobileMenu.addEventListener(eventType, function(e) {
+                e.preventDefault(); // Prevent default behavior
+                navMenu.classList.toggle('active');
+                // Toggle icon between bars and times
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-bars')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
         });
         
-        // Close mobile menu when clicking on links
+        // Close mobile menu when clicking on links - enhanced for mobile
         document.querySelectorAll('#nav-menu a').forEach(link => {
-            link.addEventListener('click', function() {
-                navMenu.classList.remove('active');
-                const icon = mobileMenu.querySelector('i');
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+            ['click', 'touchend'].forEach(eventType => {
+                link.addEventListener(eventType, function(e) {
+                    navMenu.classList.remove('active');
+                    const icon = mobileMenu.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                });
             });
         });
         
